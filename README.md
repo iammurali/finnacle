@@ -15,3 +15,4 @@ TODO:
 BACKLOG
 * Notifications
 * Reminders for loans/EMI
+* Change app name to finnacle (It is finance journal as of now)
