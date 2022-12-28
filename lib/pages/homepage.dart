@@ -1,10 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:finance_journal/data/sqlhelper.dart';
+import 'package:finance_journal/pages/addspendingform.dart';
+import 'package:finance_journal/pages/analyticspage.dart';
+import 'package:finance_journal/shared/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,6 +20,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> _spendings = [];
 
+  List<String> list = <String>['Regular', 'Two', 'Three', 'Four'];
+
+  String dropdownValue = 'Regular';
+
   bool _isLoading = true;
 
   TextEditingController spentonController = TextEditingController();
@@ -26,7 +31,6 @@ class _HomePageState extends State<HomePage> {
 
   void _refreshSpendings() async {
     final data = await SQLHelper.getItems();
-    print(data);
     setState(() {
       _spendings = data;
       _isLoading = false;
@@ -54,8 +58,7 @@ class _HomePageState extends State<HomePage> {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("Notice"),
-      content: Text(
-          "Launching this missile will destroy the entire universe. Is this what you intended to do?"),
+      content: Text("Confirm delete?"),
       actions: [
         remindButton,
         cancelButton,
@@ -71,10 +74,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   _deleteItem(id) async {
+    // ignore: unused_local_variable
     final deleted = await SQLHelper.deleteItem(id);
   }
 
-  _addItem(int spendingType, spentOn, amount) async {
+  _addItem(int spendingType, spentOn, amount, trackingType) async {
     // ignore: unused_local_variable
 
     if (amount != "" && amount != null) {
@@ -83,8 +87,9 @@ class _HomePageState extends State<HomePage> {
       return false;
     }
 
-    final insertSpending =
-        await SQLHelper.createItem(spentOn, null, spendingType, amount);
+    // ignore: unused_local_variable
+    final insertSpending = await SQLHelper.createItem(
+        spentOn, null, spendingType, amount, trackingType);
     _refreshSpendings();
   }
 
@@ -93,52 +98,8 @@ class _HomePageState extends State<HomePage> {
         context: context,
         elevation: 5,
         isScrollControlled: true,
-        builder: (_) => Container(
-              padding: EdgeInsets.only(
-                top: 15,
-                left: 15,
-                right: 15,
-                // this will prevent the soft keyboard from covering the text fields
-                bottom: MediaQuery.of(context).viewInsets.bottom + 120,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  TextField(
-                    controller: spentonController,
-                    decoration: const InputDecoration(hintText: 'Reason'),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    controller: amountController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(hintText: 'Amount'),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      // Save new journal
-                      await _addItem(
-                          type, spentonController.text, amountController.text);
-
-                      // Clear the text fields
-                      spentonController.text = '';
-                      amountController.text = '';
-
-                      // Close the bottom sheet
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('Create New'),
-                  )
-                ],
-              ),
-            ));
+        builder: (_) => AddSpendingForm(
+            context: context, spendingType: type, addItem: _addItem));
   }
 
   @override
@@ -151,7 +112,17 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: false,
         title: Text(widget.title),
+        actions: [
+          IconButton(
+              onPressed: (() {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => AnalyticsPage()));
+              }),
+              icon: Icon(Icons.analytics_outlined)),
+          IconButton(onPressed: (() {}), icon: Icon(Icons.settings_outlined))
+        ],
       ),
       body: _isLoading
           ? CircularProgressIndicator()
@@ -165,25 +136,54 @@ class _HomePageState extends State<HomePage> {
                       showAlertDialog(context, _spendings[index]['id'], index),
                   child: Material(
                     child: ListTile(
+                      visualDensity: VisualDensity.comfortable,
                       leading: _spendings[index]['spending_type'] == 0
                           ? Icon(
-                              Icons.arrow_downward_sharp,
+                              size: 30,
+                              Icons.arrow_circle_down_outlined,
                               color: Color.fromARGB(255, 162, 65, 65),
                             )
                           : Icon(
-                              Icons.arrow_upward_sharp,
+                              size: 30,
+                              Icons.arrow_circle_up,
                               color: Color.fromARGB(255, 111, 207, 114),
                             ),
-                      trailing: Text(_spendings[index]['amount'].toString()),
+                      trailing: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '₹${_spendings[index]['amount']}',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                                color: _spendings[index]['spending_type'] == 0
+                                    ? Color.fromARGB(255, 162, 65, 65)
+                                    : Color.fromARGB(255, 111, 207, 114)),
+                          ),
+                          SizedBox(
+                            height: 4.0,
+                          ),
+                          _spendings[index]['trackingType'] != null
+                              ? Text(
+                                  _spendings[index]['trackingType'].toString(),
+                                  style: TextStyle(
+                                      fontSize: 12, color: Colors.grey[600]),
+                                )
+                              : SizedBox(),
+                        ],
+                      ),
                       title: Text(_spendings[index]['spent_on']),
-                      subtitle: Text(DateFormat.yMMMEd().format(
-                          DateTime.parse(_spendings[index]['createdAt']))),
+                      subtitle: Text(
+                          DateFormat.MMMd().format(
+                              DateTime.parse(_spendings[index]['createdAt'])),
+                          style:
+                              TextStyle(fontSize: 12, color: Colors.grey[600])),
                       // tileColor: Colors.amber[colorCodes[index]],
                     ),
                   ),
                 );
               },
-              // separatorBuilder: (BuildContext context, int index) => const Divider(),
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Padding(
@@ -191,18 +191,22 @@ class _HomePageState extends State<HomePage> {
         child: Row(
           children: [
             FloatingActionButton(
+              heroTag: 'income',
               onPressed: () {
                 _showForm(1);
               },
+              foregroundColor: Colors.white,
               backgroundColor: Color.fromARGB(255, 49, 136, 52),
               tooltip: 'Income',
               child: const Icon(Icons.add),
             ),
             const Spacer(),
             FloatingActionButton(
+              heroTag: 'expense',
               onPressed: () {
                 _showForm(0);
               },
+              foregroundColor: Colors.white,
               backgroundColor: Colors.red,
               tooltip: 'Expense',
               child: const Icon(Icons.remove),
