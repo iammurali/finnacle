@@ -1,16 +1,17 @@
-# finance_journal
+# FINNACLE
 
-A new Flutter project.
+A Finance management app built for Android/IOS/Mac/Windows
 
-## Getting Started
+This is built with flutter and uses sqlite for storing data locally
 
-This project is a starting point for a Flutter application.
+I'm using this for my own personal use feel free to clone or add PR if needed
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+TODO:
+* Add Statistics page
+* Add CSV/Excel export
+* Add Online backup solution or Offline sync
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+BACKLOG
+* Notifications
+* Reminders for loans/EMI
