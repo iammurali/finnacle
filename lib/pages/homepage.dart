@@ -120,6 +120,12 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => AnalyticsPage()));
               }),
+              icon: Icon(Icons.punch_clock_outlined)),
+          IconButton(
+              onPressed: (() {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => AnalyticsPage()));
+              }),
               icon: Icon(Icons.analytics_outlined)),
           IconButton(onPressed: (() {}), icon: Icon(Icons.settings_outlined))
         ],
@@ -131,49 +137,76 @@ class _HomePageState extends State<HomePage> {
               itemCount: _spendings.length,
               itemBuilder: (BuildContext context, int index) {
                 return Dismissible(
+                  direction: DismissDirection.endToStart,
+                  background: Container(
+                    color: Colors.red,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: const [
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.delete_forever_outlined,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   key: Key(_spendings[index]['id'].toString()),
                   confirmDismiss: (direction) =>
                       showAlertDialog(context, _spendings[index]['id'], index),
                   child: Material(
                     child: ListTile(
                       visualDensity: VisualDensity.comfortable,
-                      leading: _spendings[index]['spending_type'] == 0
-                          ? Icon(
-                              size: 30,
-                              Icons.arrow_circle_down_outlined,
-                              color: Color.fromARGB(255, 162, 65, 65),
-                            )
-                          : Icon(
-                              size: 30,
-                              Icons.arrow_circle_up,
-                              color: Color.fromARGB(255, 111, 207, 114),
-                            ),
-                      trailing: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            '₹${_spendings[index]['amount']}',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                                color: _spendings[index]['spending_type'] == 0
-                                    ? Color.fromARGB(255, 162, 65, 65)
-                                    : Color.fromARGB(255, 111, 207, 114)),
-                          ),
-                          SizedBox(
-                            height: 4.0,
-                          ),
-                          _spendings[index]['trackingType'] != null
-                              ? Text(
-                                  _spendings[index]['trackingType'].toString(),
-                                  style: TextStyle(
-                                      fontSize: 12, color: Colors.grey[600]),
-                                )
-                              : SizedBox(),
-                        ],
+                      leading: SizedBox(
+                        height: double.infinity,
+                        child: _spendings[index]['spending_type'] == 0
+                            ? Icon(
+                                size: 30,
+                                Icons.arrow_circle_down_outlined,
+                                color: Color.fromARGB(255, 162, 65, 65),
+                              )
+                            : Icon(
+                                size: 30,
+                                Icons.arrow_circle_up,
+                                color: Color.fromARGB(255, 111, 207, 114),
+                              ),
                       ),
-                      title: Text(_spendings[index]['spent_on']),
+                      trailing: SizedBox(
+                        // color: Colors.yellow,
+                        height: double.infinity,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            SizedBox(
+                              height: 2.0,
+                            ),
+                            Text(
+                              '₹${_spendings[index]['amount']}',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
+                                  color: _spendings[index]['spending_type'] == 0
+                                      ? Color.fromARGB(255, 162, 65, 65)
+                                      : Color.fromARGB(255, 111, 207, 114)),
+                            ),
+                            _spendings[index]['trackingType'] != null
+                                ? Text(
+                                    _spendings[index]['trackingType']
+                                        .toString(),
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.grey[600]),
+                                  )
+                                : SizedBox(),
+                          ],
+                        ),
+                      ),
+                      title: Text(
+                        _spendings[index]['spent_on'],
+                        style: TextStyle(fontSize: 13),
+                      ),
                       subtitle: Text(
                           DateFormat.MMMd().format(
                               DateTime.parse(_spendings[index]['createdAt'])),

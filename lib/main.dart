@@ -17,8 +17,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      // debugShowMaterialGrid: true,
       title: 'FINNACLE',
       theme: ThemeData(
+        fontFamily: 'Poppins',
         // scaffoldBackgroundColor: Colors.amber,
         primarySwatch: appPrimaryColor,
       ),

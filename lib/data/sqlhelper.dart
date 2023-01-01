@@ -64,6 +64,13 @@ class SQLHelper {
     return db.query('spendings', orderBy: "id");
   }
 
+  static Future<List<Map<String, dynamic>>> getCountBasedOn(
+      String columnName) async {
+    final db = await SQLHelper.db();
+    return db.rawQuery(
+        "SELECT $columnName, SUM(amount) AS 'num' FROM spendings GROUP BY $columnName");
+  }
+
   // Read a single item by id
   // The app doesn't use this method but I put here in case you want to see it
   static Future<List<Map<String, dynamic>>> getItem(int id) async {
