@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 
 class SQLHelper {
@@ -61,7 +62,15 @@ class SQLHelper {
   // Read all spendings (journals)
   static Future<List<Map<String, dynamic>>> getItems() async {
     final db = await SQLHelper.db();
-    return db.query('spendings', orderBy: "id");
+    return db.query('spendings', orderBy: "createdAt", where: 'createdAt');
+  }
+
+  static Future<List<Map<String, dynamic>>> getListByQuery() async {
+    final db = await SQLHelper.db();
+    String query =
+        "SELECT * FROM spendings WHERE createdAt BETWEEN date('now','localtime','start of month') AND date('now','localtime')";
+    // query = "Select * from spending where createdAt BETWEEN"+ DateTime();
+    return db.rawQuery(query);
   }
 
   static Future<List<Map<String, dynamic>>> getCountBasedOn(

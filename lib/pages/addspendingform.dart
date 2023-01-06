@@ -39,7 +39,7 @@ class _AddSpendingFormState extends State<AddSpendingForm> {
                 borderRadius: BorderRadius.circular(8),
                 color: _selected == index
                     ? Color.fromARGB(121, 79, 65, 2)
-                    : Color.fromARGB(255, 238, 237, 237),
+                    : Color.fromARGB(44, 77, 76, 76),
               ),
               // color: Colors.grey,
               child: Column(

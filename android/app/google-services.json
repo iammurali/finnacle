@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "777604857527",
+    "firebase_url": "https://newagent-3bd04.firebaseio.com",
+    "project_id": "newagent-3bd04",
+    "storage_bucket": "newagent-3bd04.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777604857527:android:0bb314b3f7b0a768d21732",
+        "android_client_info": {
+          "package_name": "com.example.finance_journal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "777604857527-t9bg4tv9ckqvfngv3rg0suokp24hdt3l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASJru13brgF1bLQfPqWMr3v8lVcAU4Q3E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "777604857527-t9bg4tv9ckqvfngv3rg0suokp24hdt3l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "777604857527-1lpegkrnkkecl8fthas6dmiv2uqlqq2s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.financeJournal"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
